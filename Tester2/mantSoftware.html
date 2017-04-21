@@ -156,7 +156,7 @@
             })
         }
 
-        function ingresarServidor(){
+        function ingresarSoftware(){
             var software =  $("#txtSoftware").val();
             var version_sw =  $("#txtVersion").val();
             var descripcion = $("#txtDescripcion").val();
@@ -191,7 +191,7 @@
 
 
         $(document).ready(function () {
-            ObtieneServidor();
+            obtieneSoftware();
 
                 $('#jqxgrid').on('rowselect', function (event) {
                      
@@ -213,7 +213,7 @@
                  $("#tituloModal").empty();
                  $("#tituloModal").append("<h4 class='modal-title' id='tituloModal'>Modificar</h4>");
                  $("#botones").empty();
-                 $("#botones").append("<button type='button' class='btn btn-default' id='btnModificar' onclick='modificarServidor()'>Modificar</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
+                 $("#botones").append("<button type='button' class='btn btn-default' id='btnModificar' onclick='modificarSoftware()'>Modificar</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
             });
 
              $("#btn2").click(function (){
@@ -223,7 +223,7 @@
                  $("#tituloModal").empty();
                  $("#tituloModal").append("<h4 class='modal-title' id='tituloModal'>Ingresar</h4>");
                  $("#botones").empty();
-                 $("#botones").append("<button type='button' class='btn btn-default' id='btnIngresar' onclick='ingresarServidor()'>Ingresar Registro</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
+                 $("#botones").append("<button type='button' class='btn btn-default' id='btnIngresar' onclick='ingresarSoftware()'>Ingresar Registro</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
             });  
         });
     </script>
@@ -267,15 +267,7 @@
                         <a href="Consultas.html"><i class="fa fa-exclamation fa-fw" aria-hidden="true"></i> Consultas</a>
                     </li>
                     <li>
-                        <ul>
-                            <li class="dropdown">
-                                <a href="#"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i><i class="fa fa-caret-down"></i> Mantenimientos</a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="mantServidor.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i></a>Servidor</li>
-                                    <li><a href="mantSoftware.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i></a>Software</li>
-                                </ul>
-                            </li>
-                        </ul>
+                        <a href="Mantenimientos.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mantenimientos</a>
                     </li>
                 </ul>
             </div>
@@ -303,7 +295,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Software</label>
-                                <input type="text" name="txtSoftware" id="txtId" class="form-control" disabled>
+                                <input type="text" name="txtSoftware" id="txtId" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Última Versión Instalada</label>
