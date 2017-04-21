@@ -1,0 +1,49 @@
+#DGVLab{
+    
+}
+
+#test2 
+{ 
+    width: 800px; 
+}
+#test2 td 
+{ 
+    overflow: hidden;
+    font-size: 11px;
+    font-family: tahoma,sans-serif;
+    background: #fff;
+    padding: 2px 8px 2px 2px;
+    border-bottom: 1px solid #bbb;
+}
+#test2 th 
+{ 
+    cursor: pointer;
+    text-align: left;
+    font-weight: normal;
+    padding: 2px;
+    font-size: 11px;
+    font-family: tahoma,sans-serif;
+    border: 1px solid;
+    border-color:#fff #bbb #bbb #fff; 
+    border-bottom: 2px solid #bbb;
+ 
+}
+#test2 th:hover 
+{ 
+    border-bottom: 2px solid gold; 
+    background: #fff; 
+}
+#test2 table 
+{ 
+    table-layout: fixed; 
+    width: 800px; 
+}
+#test2 div 
+{
+    width: 819px; 
+    height: 200px;
+    overflow: auto;
+    border-left: 1px solid #ccc;
+    border-bottom: 0px solid #ccc;
+    float:left
+}

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title id='Description'>This demo illustrates the basic functionality of the Grid plugin. The jQWidgets Grid plugin offers rich support for interacting with data, including paging, grouping and sorting. 
+    </title>
+    <meta name="description" content="JavaScript Grid with rich support for Data Filtering, Paging, Editing, Sorting and Grouping" />
+    <link rel="stylesheet" href="jqwidgets/styles/jqx.base.css" type="text/css" />
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxdata.js"></script> 
+    <script type="text/javascript" src="jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxmenu.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxcheckbox.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxlistbox.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxdropdownlist.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxgrid.js"></script>
+    <script type="text/javascript" src="jqwidgets/jqxgrid.sort.js"></script> 
+    <script type="text/javascript" src="jqwidgets/jqxgrid.pager.js"></script> 
+    <script type="text/javascript" src="jqwidgets/jqxgrid.selection.js"></script> 
+    <script type="text/javascript" src="jqwidgets/jqxgrid.edit.js"></script> 
+    <script type="text/javascript" src="scripts/demos.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+    var codCurso;
+    var curso;
+        function ObtieneCursos(){
+            $.ajax({
+            url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneCursos",
+            type:"POST",
+            dataType: "JSON",
+            success:function(data){
+                //$("#jqxgrid").empty();
+                datos = data;
+                //datos = JSON.stringify(data);
+
+                 var source =
+                             {
+                                datatype: "JSON",
+                                datafields: [
+                                { name: 'codCurso'},
+                                { name: 'curso'}
+                                ],
+                                localdata: datos
+                            };
+                var cellsrenderer = function (row, columnfield, value, defaulthtml, columnproperties, rowdata) {
+                if (value < 20) {
+                    return '<span style="margin: 4px; float: ' + columnproperties.cellsalign + '; color: #ff0000;">' + value + '</span>';
+                }
+                else {
+                    return '<span style="margin: 4px; float: ' + columnproperties.cellsalign + '; color: #008000;">' + value + '</span>';
+                }
+            }
+
+            var dataAdapter = new $.jqx.dataAdapter(source);
+            // initialize jqxGrid
+            $("#jqxgrid").jqxGrid(
+            {
+                width: 850,
+                source: dataAdapter,                
+                pageable: true,
+                autoheight: true,
+                sortable: true,
+                altrows: true,
+                enabletooltips: true,
+                editable: false,
+                selectionmode: 'singlerow',
+                columns: [
+                  { text: 'Codigo curso', datafield: 'codCurso', width: 400},
+                  { text: 'Curso', datafield: 'curso', cellsalign: 'center', align: 'lefts', width: 450 }
+                  
+                ]
+            });
+
+
+
+            },
+            error:function(e){
+                alert("ERROR, ver mas detalles en Consola");
+                console.log(e.responseText);
+            }      
+            })
+        }
+
+        function cargarTextosModificar(){
+           
+        
+        }
+
+        function modificarCurso(){
+            var enviaCod =  $("#txtIdMod").val();
+            var enviaCurso = $("#txtCursoMod").val();
+            $("#respuesta").empty();
+
+            var objetoJsonEnviarServidor = {"codCurso":enviaCod,
+                                        "curso":enviaCurso};
+                $.ajax({
+                    url:"http://localhost/ProyectoLaboratorios/Service1.svc/modificaCurso",
+                    type:"POST",
+                    data: JSON.stringify(objetoJsonEnviarServidor), //de objeto a string
+                    dataType: "JSON",
+                    contentType: "application/json" ,   
+                    success:function(data){
+                        ObtieneCursos();         
+                        $("#respuesta").append("<div class='alert alert-success'> <strong>Registro Actualizado</strong>Se ha modificado satisfactoriamente el registro</div>");      
+                    },
+                    error:function(e,xhr){
+                    //alert(JSON.stringify(objetoJsonEnviarServidor));
+                    alert(e.responseText);
+                    console.log(xhr.responseText);
+                }
+            })
+        }
+
+        function ingresarCurso(){
+            var codCurso = $("#txtIdMod").val();
+            var curso =  $("#txtCursoMod").val();
+    
+            var objetoJsonEnviarServidor = {"codCurso": codCurso,
+                                            "curso":curso};
+
+            $.ajax({
+                url:"http://localhost/ProyectoLaboratorios/Service1.svc/IngresaCurso",
+                type:"POST",
+                data: JSON.stringify(objetoJsonEnviarServidor), //de objeto a string
+                dataType: "JSON",
+                contentType: "application/json" ,   
+                success:function(data){         
+                    ObtieneCursos();         
+                    $("#respuesta").append("<div class='alert alert-success'> <strong>Registro Guardado.</strong> Se ha ingresado satisfactoriamente el registro</div>");        
+                },
+                error:function(e,xhr){
+                    //alert(JSON.stringify(objetoJsonEnviarServidor));
+                    alert(e.responseText);
+                    console.log(xhr.responseText);
+                }
+            })
+        }
+
+        function limpiaCampoRespuesta(){
+            $("#respuesta").empty();   
+        }
+
+
+        $(document).ready(function () {
+            ObtieneCursos();
+
+                $('#jqxgrid').on('rowselect', function (event) {
+                     
+                    // event arguments.
+                    var args = event.args;
+                    // row's bound index.
+                    var rowBoundIndex = args.rowindex;
+                    // row's data. The row's data object or null(when all rows are being selected or unselected with a single action). If you have a datafield called "firstName", to access the row's firstName, use var firstName = rowData.firstName;
+                    var rowData = args.row;
+                    codCurso = rowData.codCurso;
+                    curso = rowData.curso;
+                    $("#txtIdMod").val(codCurso);
+                    $("#txtCursoMod").val(curso);                    
+                });
+
+             $("#btn1").click(function (){
+                 $("#tituloModal").empty();
+                 $("#tituloModal").append("<h4 class='modal-title' id='tituloModal'>Modificar</h4>");
+                 $("#botones").empty();
+                 $("#botones").append("<button type='button' class='btn btn-default' id='btnModificar' onclick='modificarCurso()'>Modificar</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
+            });
+
+             $("#btn2").click(function (){
+                 $("#txtIdMod").val("");
+                 $("#txtCursoMod").val("");    
+                 $("#tituloModal").empty();
+                 $("#tituloModal").append("<h4 class='modal-title' id='tituloModal'>Ingresar</h4>");
+                 $("#botones").empty();
+                 $("#botones").append("<button type='button' class='btn btn-default' id='btnIngresar' onclick='ingresarCurso()'>Ingresar Registro</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
+            });
+
+             
+        });
+    </script>
+</head>
+<body class='default' style="margin-top:20px">
+
+    <button id="btn2" name="btn2" class="btn btn-primary" data-toggle="modal" data-target="#modalMantenimiento">Nuevo</button>
+    <button id="btn1" name="btn1" class="btn btn-primary" data-toggle="modal" data-target="#modalMantenimiento">Modificar</button>
+    <div id='jqxWidget' style="font-size: 13px; font-family: Verdana;margin-top: 15px">    
+        <div id="jqxgrid">
+        </div>
+     </div>
+
+<!-- Inicio de Modal de Actualización de registros -->
+<div id="modalMantenimiento" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div id="tituloModal">
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+            <label>Id Curso</label>
+            <input type="text" name="txtIdMod" id="txtIdMod" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Curso</label>
+            <input type="text" name="txtCursoMod" id="txtCursoMod" class="form-control">    
+        </div>
+        <div id="respuesta"></div>  
+      </div>
+      <div class="modal-footer" id="botones">   
+            <button type='button' class='btn btn-default' id='btnModificar'>Modificar</button>
+            <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose'>Close</button>
+      </div>
+    </div>
+    <!-- Fin de Modal de Actualización de registros-->
+</div>
+</body>
+</html>
