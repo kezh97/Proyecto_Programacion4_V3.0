@@ -99,6 +99,13 @@
                     </li>
                     <li>
                         <a href="Mantenimientos.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mantenimientos</a>
+                        <ul>
+                            <li><a href="mantCurso.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Curso</a></li>
+                            <li><a href="mantSoftware.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Software</a></li>
+                            <li><a href="mantServidor.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Servidor</a></li>
+                            <li><a href="mantLabSoftware.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Lab.Software</a></li>
+                            <li><a href="mantLabServidor.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Lab.Servidor</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -127,56 +134,165 @@
                             <div class="modal-body">
                                 <p>Aquí se debe de cargar la lista de equipos en el aula</p>
                                 <label for="comment">Comentario:</label>
-  								<textarea class="form-control" rows="5" id="comment" disabled></textarea>
+  								<textarea class="form-control" rows="5" id="comment"></textarea>
+  								<div id="respuesta"></div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" id="btnReservar" class="btn btn-default">Reservar</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <div class="modal-footer" id="modal-footer">
+                                <!--<button type="button" class="btn btn-default">Reservar</button> -->
+                                
                             </div>
                         </div>
       
                     </div>
                     </div>
-                    <button type="button" id="btnAula1" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Aula 1231</button>
-                    <button type="button" id="btnAula2" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Aula 1225</button>               
-                    <button type="button" id="btnAula3" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Aula 1228</button>
+                    <button type="button" id="btnAula1" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Aula PII01</button>
+                    <button type="button" id="btnAula2" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Aula PII02</button>
+                    <button type="button" id="btnAula3" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Aula PII03</button> 
 			</div>
 			<div class="col-md-3"></div>
 			<div class="col-md-4">
-				<p>Día de solicitud: <input type="text" id="datepicker" class="form-control"></p>
-				<p>Aula: <select class="form-control">
-					<option>LO-66</option>
-					<option>KA-58</option>
-					<option>IG-59</option>
+				<p>Día de solicitud: <input type="text" id="datepicker" class="form-control" ></p>
+				<p>Curso: <select class="form-control" id="slcCurso">
+
 				</select>
 				</p>
-				<p>Turno: <select class="form-control">
-					<option>1 (9am - 12pm)</option>
-					<option>2 (12:30pm - 3:00pm)</option>
-					<option>3 (3:30pm - 6:00pm)</option>
-					<option>4 (6:30pm - 9:30pm)</option>
+				<p>Turno: <select class="form-control" id="slcTurno">
+				</select>	
+				</p>
+				<p>Usuario: <select class="form-control" id="slcUsuario">
 				</select>	
 				</p>
 				<div class="form-group" style="text-align: center;">
-					<button type="button" class="btn btn-primary">Solicitar aula</button>
+					<!--<button id="btnSolicitar" type="button" class="btn btn-primary">Solicitar aula</button> -->
 				</div>
 				
 			</div>
 		</div>
 		
-		
-	</div>
+		<script>
 
-	<script>
-	$(document).ready(function(){
-		$("#btnSolicitar").click(function(){
-		
+		function IngresarSolicitud(idLab){
+			var fech = $("#datepicker").val();
+			var estadoSolicitud = 2;
+			var idTurno =  $("#slcTurno").val();
+			var idUsuario =  $("#slcUsuario").val();
+			var idLaboratorio =  idLab;
+			var idCurso =  $("#slcCurso").val();
+	
+			var objetoJsonEnviarServidor = {"fechaSolicitud": fech,
+									"estadoSolicitud":estadoSolicitud,
+									"idTurno":idTurno,
+									"idUsuario":idUsuario,
+									"idLaboratorio":idLaboratorio,
+									"idCurso":idCurso};
+			$.ajax({
+				url:"http://localhost/ProyectoLaboratorios/Service1.svc/IngresaSolicitud",
+				type:"POST",
+				data: JSON.stringify(objetoJsonEnviarServidor), //de objeto a string
+				dataType: "JSON",
+				contentType: "application/json"	,	
+				success:function(data){			
+					$("#respuesta").append("<br><div class='alert alert-success'> <strong>Solicitud Ingresada. </strong>El administrador revisara la solicitud tan pronto como sea posible.</div>");  		
+				},
+				error:function(e,xhr){
+				//alert(JSON.stringify(objetoJsonEnviarServidor));
+				alert(e.responseText);
+				console.log(xhr.responseText);
+			}
+			})
+		}
+
+
+		function ObtenerUsuario(){
+			$.ajax({
+				url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneUsername",
+				type:"POST",
+				dataType: "JSON",
+				success:function(data){
+					var arreglo = [];
+					arreglo = data;
+					arreglo.map(function (item){
+			  			$("#slcUsuario").append('<option value="'+item.id_usuario+'">'+item.username+'</option>');
+					})
+				},
+				error:function(e){
+					alert("ERROR, ver mas detalles en Consola");
+					console.log(e.responseText);
+				}
+			})
+		}
+
+		function ObtenerTurno(){
+			$.ajax({
+				url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneTurno",
+				type:"POST",
+				dataType: "JSON",
+				success:function(data){
+					var arreglo = [];
+					arreglo = data;
+					arreglo.map(function (item){
+			  		$("#slcTurno").append('<option value="'+item.idTurno+'">'+item.turno+'</option>');
+					})
+				},
+				error:function(e){
+					alert(e.responseText);
+				}
+			})		
+		}
+
+		function ObtieneCursos(){
+			$.ajax({
+				url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneCursos",
+				type:"POST",
+				dataType: "JSON",
+				success:function(data){
+					var arreglo = [];
+					arreglo = data;
+					arreglo.map(function (item){
+			  		$("#slcCurso").append('<option value="'+item.codCurso+'">'+item.curso+'</option>');
+					})
+				},
+				error:function(e){
+					alert("ERROR, ver mas detalles en Consola");
+					console.log(e.responseText);
+				}
+			})
+		}
+
+		$(document).ready(function(){
+			ObtenerUsuario();
+			ObtieneCursos();
+			ObtenerTurno();
+			$("#btnAula1").click(function(){
+				$("#modal-footer").empty();
+				$("#respuesta").empty();
+				$("#modal-footer").append("<button type='button' class='btn btn-default' onclick='IngresarSolicitud(4)'>Reservar</button>");
+				$("#modal-footer").append("<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>");	
+				
+			})
+
+			$("#btnAula2").click(function(){
+				$("#modal-footer").empty();
+				$("#respuesta").empty();
+				$("#modal-footer").append("<button type='button' class='btn btn-default' onclick='IngresarSolicitud(5)'>Reservar</button>");
+				$("#modal-footer").append("<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>");	
+				
+			})
+
+			$("#btnAula3").click(function(){
+				$("#modal-footer").empty();
+				$("#respuesta").empty();
+				$("#modal-footer").append("<button type='button' class='btn btn-default' onclick='IngresarSolicitud(6)'>Reservar</button>");
+				$("#modal-footer").append("<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>");	
+				
+			})
+
 		})
-	})
-
-  	$( function() {
-    	$( "#datepicker" ).datepicker();
-  	});
-  </script>
+		
+		$( function() {
+    		$( "#datepicker" ).datepicker();	
+  		});
+		</script>
+	</div>
 </body>
 </html>

@@ -64,7 +64,45 @@
         var id_laboratorio;
         var id_software;
 
-        function obtieneSoftware(){
+        function ObtenerIDLab(){
+            $.ajax({
+                url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtienelaboratorio",
+                type:"POST",
+                dataType: "JSON",
+                success:function(data){
+                    var arreglo = [];
+                    arreglo = data;
+                    arreglo.map(function (item){
+                        $("#txtId_laboratorio").append('<option value="' + item.id_laboratoio + '">' + item.descripcion + '</option>');
+                    })
+            },
+            error:function(e){
+                alert("ERROR, ver mas detalles en Consola");
+                console.log(e.responseText);
+                }
+            })
+        }
+
+        function ObtenerIDSoft(){
+            $.ajax({
+                url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneSoftware",
+                type:"POST",
+                dataType: "JSON",
+                success:function(data){
+                    var arreglo = [];
+                    arreglo = data;
+                    arreglo.map(function (item){
+                        $("#txtId_software").append('<option value="' + item.id_software + '">' + item.descripcion + '</option>');
+                    })
+            },
+            error:function(e){
+                alert("ERROR, ver mas detalles en Consola");
+                console.log(e.responseText);
+                }
+            })
+        }
+
+        function obtieneLab_Software(){
             $.ajax({
             url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneLab_Software",
             type:"POST",
@@ -75,7 +113,7 @@
                  var source = {
                                 datatype: "JSON",
                                 datafields: [
-                                { name: 'id_labSW'}
+                                { name: 'id_labSW'},
                                 { name: 'actualizado'},
                                 { name: 'id_laboratorio'},
                                 { name: 'id_software'}
@@ -121,8 +159,8 @@
             })
         }
 
-        function modificarSoftware(){
-            var id_labSW = $("#txtId_labSW").val():
+        function modificarLab_Software(){
+            var id_labSW = $("#txtLab_labSW").val();
             var actualizado =  $("#txtActualizado").val();
             var id_laboratorio =  $("#txtId_laboratorio").val();
             var id_software = $("#txtId_software").val();
@@ -142,7 +180,7 @@
                     dataType: "JSON",
                     contentType: "application/json" ,   
                     success:function(data){
-                        ObtieneServidor();         
+                        obtieneLab_Software();         
                         $("#respuesta").append("<div class='alert alert-success'> <strong>Registro Actualizado. </strong>Se ha modificado satisfactoriamente el registro.</div>");      
                     },
                     error:function(e,xhr){
@@ -153,25 +191,25 @@
             })
         }
 
-        function ingresarSoftware(){
-            var software =  $("#txtSoftware").val();
-            var version_sw =  $("#txtVersion").val();
-            var descripcion = $("#txtDescripcion").val();
+        function ingresarLab_Software(){
+            var actualizado =  $("#txtActualizado").val();
+            var id_laboratorio =  $("#txtId_laboratorio").val();
+            var id_software = $("#txtId_software").val();
     
             var objetoJsonEnviarSoftware = {
-                                            "software":software,
-                                            "version_sw":version_sw,
-                                            "descripcion":descripcion
+                                            "actualizado":actualizado,
+                                            "id_laboratorio":id_laboratorio,
+                                            "id_software":id_software
                                         };
 
             $.ajax({
-                url:"http://localhost/ProyectoLaboratorios/Service1.svc/ingresaSoftware",
+                url:"http://localhost/ProyectoLaboratorios/Service1.svc/ingresaLab_Software",
                 type:"POST",
                 data: JSON.stringify(objetoJsonEnviarSoftware), //de objeto a string
                 dataType: "JSON",
                 contentType: "application/json" ,   
                 success:function(data){         
-                    ObtieneServidor();         
+                    obtieneLab_Software();         
                     $("#respuesta").append("<div class='alert alert-success'> <strong>Registro Guardado. </strong>Se ha ingresado satisfactoriamente el registro</div>");        
                 },
                 error:function(e,xhr){
@@ -188,7 +226,9 @@
 
 
         $(document).ready(function () {
-            obtieneSoftware();
+            obtieneLab_Software();
+            ObtenerIDLab();
+            ObtenerIDSoft();
 
                 $('#jqxgrid').on('rowselect', function (event) {
                      
@@ -198,29 +238,32 @@
                     var rowBoundIndex = args.rowindex;
                     // row's data. The row's data object or null(when all rows are being selected or unselected with a single action). If you have a datafield called "firstName", to access the row's firstName, use var firstName = rowData.firstName;
                     var rowData = args.row;
-                    software = rowData.software;
-                    version_sw = rowData.version_sw;
-                    descripcion = rowData.descripcion;
-                    $("#txtSoftware").val(software);
-                    $("#txtVersion").val(version_sw);
-                    $("#txtDescripcion").val(descripcion);                    
+                    id_labSW = rowData.id_labSW;
+                    actualizado = rowData.actualizado;
+                    id_laboratorio = rowData.id_laboratorio;
+                    id_software = rowData.id_software;
+                    $("#txtLab_labSW").val(id_labSW);
+                    $("#txtActualizado").val(actualizado);
+                    $("#txtId_laboratorio").val(id_laboratorio); 
+                    $("#txtId_software").val(id_software);                    
                 });
 
              $("#btn1").click(function (){
                  $("#tituloModal").empty();
                  $("#tituloModal").append("<h4 class='modal-title' id='tituloModal'>Modificar</h4>");
                  $("#botones").empty();
-                 $("#botones").append("<button type='button' class='btn btn-default' id='btnModificar' onclick='modificarSoftware()'>Modificar</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
+                 $("#botones").append("<button type='button' class='btn btn-default' id='btnModificar' onclick='modificarLab_Software()'>Modificar</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
             });
 
              $("#btn2").click(function (){
-                 $("#txtSoftware").val("");
-                 $("#txtVersion").val("");
-                 $("#txtDescripcion").val("");     
+                 $("#txtLab_labSW").val("");
+                 $("#txtActualizado").val("");
+                 $("#txtId_laboratorio").val("");
+                 $("#txtId_software").val("");     
                  $("#tituloModal").empty();
                  $("#tituloModal").append("<h4 class='modal-title' id='tituloModal'>Ingresar</h4>");
                  $("#botones").empty();
-                 $("#botones").append("<button type='button' class='btn btn-default' id='btnIngresar' onclick='ingresarSoftware()'>Ingresar Registro</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
+                 $("#botones").append("<button type='button' class='btn btn-default' id='btnIngresar' onclick='ingresarLab_Software()'>Ingresar Registro</button> <button type='button' class='btn btn-default' data-dismiss='modal' id='btnModalClose' onclick='limpiaCampoRespuesta()' >Close</button>"); 
             });  
         });
     </script>
@@ -266,8 +309,11 @@
                     <li>
                         <a href="#"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mantenimientos</a>
                         <ul>
-                            <li><a href="mantSoftware.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Mantenimiento de Software</a></li>
-                            <li><a href="mantServidor.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i>Mantenimiento de Servidor</a></li>
+                            <li><a href="mantCurso.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Curso</a></li>
+                            <li><a href="mantSoftware.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Software</a></li>
+                            <li><a href="mantServidor.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Servidor</a></li>
+                            <li><a href="mantLabSoftware.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Lab.Software</a></li>
+                            <li><a href="mantLabServidor.html"><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mant. de Lab.Servidor</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -276,7 +322,7 @@
     </nav>
 
     <div id="wrapper-body">
-        <h1><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mantenimientos</h1>
+        <h1><i class="fa fa-cogs fa-fw" aria-hidden="true"></i> Mantenimiento de Laboratorio Software</h1>
         <hr class="divider">
 
         <button id="btn2" name="btn2" class="btn btn-primary" data-toggle="modal" data-target="#modalMantenimiento">Nuevo</button>
@@ -295,16 +341,25 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>Software</label>
-                                <input type="text" name="txtSoftware" id="txtId" class="form-control">
+                            <label>ID Lab.Software</label>
+                            <input type="text" name="txtLab_labSW" id="txtLab_labSW" class="form-control" disabled>
                         </div>
                         <div class="form-group">
-                            <label>Última Versión Instalada</label>
-                                <input type="text" name="txtVersion" id="txtServidor" class="form-control">
+                            <label>Actualizado</label>
+                            <select type="text" name="txtActualizado" id="txtActualizado" class="form-control">
+                                <option value="Si">Si</option>
+                                <option value="No">No</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label>Descripcion</label>
-                            <input type="text" name="txtDescripcion" id="txtDescripcion" class="form-control" >    
+                            <label>ID Laboratorio Asociado</label>
+                            <select class="form-control" name="txtId_laboratorio" id="txtId_laboratorio">
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Software Asociado</label>
+                            <select class="form-control" name="txtId_software" id="txtId_software">                               
+                            </select>
                         </div>
                         <div id="respuesta"></div>  
                     </div>
