@@ -60,7 +60,7 @@
     </style>
 
     <script>
-        var software;
+        var actualizado;
         var version_sw;
         var descripcion;
 
@@ -75,7 +75,6 @@
                  var source = {
                                 datatype: "JSON",
                                 datafields: [
-                                { name: 'id_software'},
                                 { name: 'software'},
                                 { name: 'version_sw'},
                                 { name: 'descripcion'}
@@ -106,9 +105,8 @@
                 editable: false,
                 selectionmode: 'singlerow',
                 columns: [
-                  { text: 'ID', datafield: 'id_software', width: 125},
                   { text: 'Software', datafield: 'software', width: 250},
-                  { text: 'Última Versión', datafield: 'version_sw', width: 125},
+                  { text: 'Última Versión', datafield: 'version_sw', width: 250},
                   { text: 'Descripción', datafield: 'descripcion', cellsalign: 'left', align: 'left', width: 350 }
                 ]
             });
@@ -127,14 +125,12 @@
         }
 
         function modificarSoftware(){
-            var id_Software = $("#txtId").val();
             var software =  $("#txtSoftware").val();
             var version_sw =  $("#txtVersion").val();
             var descripcion = $("#txtDescripcion").val();
             $("#respuesta").empty();
 
             var objetoJsonEnviarSoftware = {
-                                            "id_software": id_Software,
                                             "software":software,
                                             "version_sw":version_sw,
                                             "descripcion":descripcion
@@ -147,7 +143,7 @@
                     dataType: "JSON",
                     contentType: "application/json" ,   
                     success:function(data){
-                        obtieneSoftware();         
+                        ObtieneServidor();         
                         $("#respuesta").append("<div class='alert alert-success'> <strong>Registro Actualizado. </strong>Se ha modificado satisfactoriamente el registro.</div>");      
                     },
                     error:function(e,xhr){
@@ -176,7 +172,7 @@
                 dataType: "JSON",
                 contentType: "application/json" ,   
                 success:function(data){         
-                    ObtieneSoftware();         
+                    ObtieneServidor();         
                     $("#respuesta").append("<div class='alert alert-success'> <strong>Registro Guardado. </strong>Se ha ingresado satisfactoriamente el registro</div>");        
                 },
                 error:function(e,xhr){
@@ -203,11 +199,9 @@
                     var rowBoundIndex = args.rowindex;
                     // row's data. The row's data object or null(when all rows are being selected or unselected with a single action). If you have a datafield called "firstName", to access the row's firstName, use var firstName = rowData.firstName;
                     var rowData = args.row;
-                    id_software = rowData.id_software;
                     software = rowData.software;
                     version_sw = rowData.version_sw;
                     descripcion = rowData.descripcion;
-                    $("#txtId").val(id_software);
                     $("#txtSoftware").val(software);
                     $("#txtVersion").val(version_sw);
                     $("#txtDescripcion").val(descripcion);                    
@@ -221,7 +215,6 @@
             });
 
              $("#btn2").click(function (){
-                 $("#txtId").val("");
                  $("#txtSoftware").val("");
                  $("#txtVersion").val("");
                  $("#txtDescripcion").val("");     
@@ -303,16 +296,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>ID Software</label>
-                            <input type="text" name="txtId" id="txtId" class="form-control" disabled="">
-                        </div>
-                        <div class="form-group">
                             <label>Software</label>
-                            <input type="text" name="txtSoftware" id="txtSoftware" class="form-control">
+                                <input type="text" name="txtSoftware" id="txtId" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Última Versión Instalada</label>
-                            <input type="text" name="txtVersion" id="txtVersion" class="form-control">
+                                <input type="text" name="txtVersion" id="txtServidor" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Descripcion</label>

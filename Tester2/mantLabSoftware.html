@@ -60,13 +60,13 @@
     </style>
 
     <script>
-        var software;
-        var version_sw;
-        var descripcion;
+        var actualizado;
+        var id_laboratorio;
+        var id_software;
 
         function obtieneSoftware(){
             $.ajax({
-            url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneSoftware",
+            url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneLab_Software",
             type:"POST",
             dataType: "JSON",
             success:function(data){
@@ -75,10 +75,10 @@
                  var source = {
                                 datatype: "JSON",
                                 datafields: [
-                                { name: 'id_software'},
-                                { name: 'software'},
-                                { name: 'version_sw'},
-                                { name: 'descripcion'}
+                                { name: 'id_labSW'}
+                                { name: 'actualizado'},
+                                { name: 'id_laboratorio'},
+                                { name: 'id_software'}
                                 ],
                                 localdata: datos
                             };
@@ -106,10 +106,10 @@
                 editable: false,
                 selectionmode: 'singlerow',
                 columns: [
-                  { text: 'ID', datafield: 'id_software', width: 125},
-                  { text: 'Software', datafield: 'software', width: 250},
-                  { text: 'Última Versión', datafield: 'version_sw', width: 125},
-                  { text: 'Descripción', datafield: 'descripcion', cellsalign: 'left', align: 'left', width: 350 }
+                  { text: 'ID Lab.Software', datafield: 'id_labSW', width: 175},
+                  { text: 'Actualizado', datafield: 'actualizado', width: 175},
+                  { text: 'ID Laboratorio', datafield: 'id_laboratorio', width: 250},
+                  { text: 'ID Software', datafield: 'id_software', cellsalign: 'left', align: 'left', width: 250 }
                 ]
             });
 
@@ -121,33 +121,28 @@
             })
         }
 
-        function cargarTextosModificar(){
-           
-        
-        }
-
         function modificarSoftware(){
-            var id_Software = $("#txtId").val();
-            var software =  $("#txtSoftware").val();
-            var version_sw =  $("#txtVersion").val();
-            var descripcion = $("#txtDescripcion").val();
+            var id_labSW = $("#txtId_labSW").val():
+            var actualizado =  $("#txtActualizado").val();
+            var id_laboratorio =  $("#txtId_laboratorio").val();
+            var id_software = $("#txtId_software").val();
             $("#respuesta").empty();
 
             var objetoJsonEnviarSoftware = {
-                                            "id_software": id_Software,
-                                            "software":software,
-                                            "version_sw":version_sw,
-                                            "descripcion":descripcion
+                                            "id_labSW":id_labSW,
+                                            "actualizado":actualizado,
+                                            "id_laboratorio":id_laboratorio,
+                                            "id_software":id_software
                                         };
                                             
                 $.ajax({
-                    url:"http://localhost/ProyectoLaboratorios/Service1.svc/modificaSoftware",
+                    url:"http://localhost/ProyectoLaboratorios/Service1.svc/modificaLab_Software",
                     type:"POST",
                     data: JSON.stringify(objetoJsonEnviarSoftware), //de objeto a string
                     dataType: "JSON",
                     contentType: "application/json" ,   
                     success:function(data){
-                        obtieneSoftware();         
+                        ObtieneServidor();         
                         $("#respuesta").append("<div class='alert alert-success'> <strong>Registro Actualizado. </strong>Se ha modificado satisfactoriamente el registro.</div>");      
                     },
                     error:function(e,xhr){
@@ -176,7 +171,7 @@
                 dataType: "JSON",
                 contentType: "application/json" ,   
                 success:function(data){         
-                    ObtieneSoftware();         
+                    ObtieneServidor();         
                     $("#respuesta").append("<div class='alert alert-success'> <strong>Registro Guardado. </strong>Se ha ingresado satisfactoriamente el registro</div>");        
                 },
                 error:function(e,xhr){
@@ -203,11 +198,9 @@
                     var rowBoundIndex = args.rowindex;
                     // row's data. The row's data object or null(when all rows are being selected or unselected with a single action). If you have a datafield called "firstName", to access the row's firstName, use var firstName = rowData.firstName;
                     var rowData = args.row;
-                    id_software = rowData.id_software;
                     software = rowData.software;
                     version_sw = rowData.version_sw;
                     descripcion = rowData.descripcion;
-                    $("#txtId").val(id_software);
                     $("#txtSoftware").val(software);
                     $("#txtVersion").val(version_sw);
                     $("#txtDescripcion").val(descripcion);                    
@@ -221,7 +214,6 @@
             });
 
              $("#btn2").click(function (){
-                 $("#txtId").val("");
                  $("#txtSoftware").val("");
                  $("#txtVersion").val("");
                  $("#txtDescripcion").val("");     
@@ -303,16 +295,12 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label>ID Software</label>
-                            <input type="text" name="txtId" id="txtId" class="form-control" disabled="">
-                        </div>
-                        <div class="form-group">
                             <label>Software</label>
-                            <input type="text" name="txtSoftware" id="txtSoftware" class="form-control">
+                                <input type="text" name="txtSoftware" id="txtId" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Última Versión Instalada</label>
-                            <input type="text" name="txtVersion" id="txtVersion" class="form-control">
+                                <input type="text" name="txtVersion" id="txtServidor" class="form-control">
                         </div>
                         <div class="form-group">
                             <label>Descripcion</label>

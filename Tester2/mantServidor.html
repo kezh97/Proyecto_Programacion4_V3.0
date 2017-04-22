@@ -63,6 +63,7 @@
         var rol_servidor;
         var software_actual;
         var descripcion;
+        
         function ObtieneServidor(){
             $.ajax({
             url:"http://localhost/ProyectoLaboratorios/Service1.svc/obtieneServidor",
@@ -113,8 +114,6 @@
                   { text: 'Descripcion', datafield: 'descripcion', cellsalign: 'left', align: 'left', width: 175 }
                 ]
             });
-
-
 
             },
             error:function(e){
